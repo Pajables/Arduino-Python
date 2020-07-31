@@ -1,0 +1,876 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Commanduino Library &mdash; Commanduino 0.1.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command Devices Package" href="commanduino.commanddevices.html" />
+    <link rel="prev" title="Documentation for the Commanduino Library" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Commanduino
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Commanduino Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-commanduino">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commanduino.commanddevices.html">Command Devices Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="commanduino.devices.html">Devices Package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-commanduino.commandhandler">Command Handler Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-commanduino.commandmanager">Command Manager Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-commanduino.lock">Lock module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Commanduino</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Commanduino Library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/commanduino.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="commanduino-library">
+<h1>Commanduino Library<a class="headerlink" href="#commanduino-library" title="Permalink to this headline">¶</a></h1>
+<p>This is the documentation for the Commanduino controller modules. Here, you will find the methods associated with <a class="reference internal" href="#command-handler"><span class="std std-ref">Command Handler Module</span></a>, <a class="reference internal" href="#command-manager"><span class="std std-ref">Command Manager Module</span></a>, and <a class="reference internal" href="#lock"><span class="std std-ref">Lock module</span></a>.
+For the documentation associated with the Arduino devices, please see the <a class="reference internal" href="commanduino.commanddevices.html#command-devices"><span class="std std-ref">Command Devices Package</span></a> page for more details.</p>
+<div class="section" id="module-commanduino">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-commanduino" title="Permalink to this headline">¶</a></h2>
+<p>Custom library designed to interface with Arduino hardware, allowing for control of the boards via Python.</p>
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="commanduino.commanddevices.html">Command Devices Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commandanalogread">Command Analog Read Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commandanalogwrite">Command Analog Write Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commanddevice">Command Device Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commanddigitalread">Command Digital Read Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commanddigitalwrite">Command Digital Write Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commandlinearaccelstepper">Command Linear Accelerator Stepper Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.commandservo">Command Servo Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.commanddevices.html#module-commanduino.commanddevices.register">Register Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="commanduino.devices.html">Devices Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="commanduino.devices.html#module-commanduino.devices.axis">Axis Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-commanduino.commandhandler">
+<span id="command-handler-module"></span><span id="command-handler"></span><h2>Command Handler Module<a class="headerlink" href="#module-commanduino.commandhandler" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-commandhandler"></span><dl class="py class">
+<dt id="commanduino.commandhandler.CommandHandler">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandhandler.</code><code class="sig-name descname">CommandHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delim</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">','</span></em>, <em class="sig-param"><span class="n">term</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">';'</span></em>, <em class="sig-param"><span class="n">cmd_decimal</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the Command Handler which will handle commands to/from the Arduino hardware.</p>
+<dl>
+<dt>Args:</dt><dd><p>delim: Delimiter of the command, default set to DEFAULT_DELIM(‘,’)</p>
+<p>term: Terminal character of the command, set to DEFAULT_TERM(‘;’)</p>
+<p>cmd_decimal: Decimal of the command, default set to DEFAULT_CMD_DECIMAL(2)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.add_command">
+<code class="sig-name descname">add_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.add_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.add_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an Arduino command to the handler.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.add_default_handler">
+<code class="sig-name descname">add_default_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.add_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.add_default_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a default handler to the device.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.add_relay">
+<code class="sig-name descname">add_relay</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.add_relay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.add_relay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a relay to the Handler.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.build_remaining">
+<code class="sig-name descname">build_remaining</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd_list</span><span class="p">:</span> <span class="n">List<span class="p">[</span>str<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.build_remaining"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.build_remaining" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds an Arduino command from a list of partial commands.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmd_list: The list of command constituents.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.forge_command">
+<code class="sig-name descname">forge_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.forge_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.forge_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a full Arduino command.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p><a href="#id1"><span class="problematic" id="id2">*</span></a>args: Variable length argument list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.from_config">
+<em class="property">classmethod </em><code class="sig-name descname">from_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#commanduino.commandhandler.CommandHandler" title="commanduino.commandhandler.CommandHandler">commanduino.commandhandler.CommandHandler</a><a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.from_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtains the details of the handler from a configuration.</p>
+<dl>
+<dt>Args:</dt><dd><p>cls: The instantiating class.</p>
+<p>config: Dictionary containing the configuration details.</p>
+</dd>
+<dt>Returns:</dt><dd><p>CommandHandler: New CommandHandler object with details set from a configuration setup.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.handle">
+<code class="sig-name descname">handle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.handle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.handle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles a full command to/from the Arduino hardware.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmd: The command to be handled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.process_char">
+<code class="sig-name descname">process_char</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a_char</span><span class="p">:</span> <span class="n">bytes</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.process_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.process_char" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes a single character of a command and adds it to the receiving buffer.
+If the terminator character is found, process the buffer.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>a_char: The character to be processed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.remove_command">
+<code class="sig-name descname">remove_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.remove_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.remove_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes an Arduino command from the Handler.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.remove_default_handler">
+<code class="sig-name descname">remove_default_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.remove_default_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.remove_default_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a default handler from the device.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.remove_relay">
+<code class="sig-name descname">remove_relay</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.remove_relay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.remove_relay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a relay form the Handler.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p>callback_function: A copy of the command to “callback”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.set_command_decimal">
+<code class="sig-name descname">set_command_decimal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd_decimal</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.set_command_decimal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.set_command_decimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the decimal of the Arduino command.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmd_decimal: The decimal of the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.CommandHandler.set_command_header">
+<code class="sig-name descname">set_command_header</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd_header</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">add_delim</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#CommandHandler.set_command_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.CommandHandler.set_command_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the header of the Arduino command.</p>
+<dl>
+<dt>Args:</dt><dd><p>cmd_header: The header of the command.</p>
+<p>add_delim: Adds a delimiter to the command, default set to True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="commanduino.commandhandler.SerialCommandHandler">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandhandler.</code><code class="sig-name descname">SerialCommandHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">port</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">baudrate</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">115200</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">delim</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">','</span></em>, <em class="sig-param"><span class="n">term</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">';'</span></em>, <em class="sig-param"><span class="n">cmd_decimal</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code>, <a class="reference internal" href="#commanduino.commandhandler.CommandHandler" title="commanduino.commandhandler.CommandHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">commanduino.commandhandler.CommandHandler</span></code></a></p>
+<p>Represents the Command Handler which will handle commands to/from the Arduino hardware via Serial Communication.</p>
+<dl>
+<dt>Args:</dt><dd><p>port: The port to communicate over.</p>
+<p>baudrate: The baudrate of the serial communication, default set to DEFAULT_BAUDRATE (115200)</p>
+<p>timeout: The time to wait for timeout, default set to DEFAULT_TIMEOUT (0.01)</p>
+<p>delim: The delimiting character of a command, default set to DEFAULT_DELIM (‘,’)</p>
+<p>term: The terminal character of a command, default set to DEFAULT_TERM (‘;’)</p>
+<p>cmd_decimal: The decimal of the command, default set to DEFAULT_CMD_DECIMAL (2)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the serial communication between the PC and Arduino board.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.open">
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">port</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">baudrate</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the serial communication between the PC and Arduino board.</p>
+<dl>
+<dt>Args:</dt><dd><p>port: The port to communicate over.</p>
+<p>baudrate: The baudrate of serial communication.</p>
+<p>timeout: The time to wait for timeout.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.process_serial">
+<code class="sig-name descname">process_serial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a_serial</span><span class="p">:</span> <span class="n">serial.serialwin32.Serial</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.process_serial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.process_serial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Processes the serial communication to obtain data to be processed.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>a_serial: The serial to read from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the Handler processing commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.send">
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">arg</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command over the serial communication.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id (str): The ID of the command.</p>
+<p><a href="#id3"><span class="problematic" id="id4">*</span></a>arg: Variable argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases the lock when signalled via an interrupt.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.wait_until_running">
+<code class="sig-name descname">wait_until_running</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sleep_time</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.01</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.wait_until_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.wait_until_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits until the current thread is running.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>sleep_time (float): The time to wait for, default set to 0.01</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.SerialCommandHandler.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#SerialCommandHandler.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.SerialCommandHandler.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a message over the serial communication.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msg (str): The message to send.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandhandler.</code><code class="sig-name descname">TCPIPCommandHandler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">port</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">address</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">protocol</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'TCP'</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">delim</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">','</span></em>, <em class="sig-param"><span class="n">term</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">';'</span></em>, <em class="sig-param"><span class="n">cmd_decimal</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code>, <a class="reference internal" href="#commanduino.commandhandler.CommandHandler" title="commanduino.commandhandler.CommandHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">commanduino.commandhandler.CommandHandler</span></code></a></p>
+<p>Represents the Command Handler which will handle commands to/from the Arduino hardware via TCP/IP socket.</p>
+<dl>
+<dt>Args:</dt><dd><p>port: The TCP/UDP port to communicate over.</p>
+<p>address: The IP address of the device.</p>
+<p>protocol: Either tcp or udp, default set to TCP.</p>
+<p>timeout: The time to wait for timeout, default set to DEFAULT_TIMEOUT (0.01)</p>
+<p>delim: The delimiting character of a command, default set to DEFAULT_DELIM (‘,’)</p>
+<p>term: The terminal character of a command, default set to DEFAULT_TERM (‘;’)</p>
+<p>cmd_decimal: The decimal of the command, default set to DEFAULT_CMD_DECIMAL (2)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.close">
+<code class="sig-name descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the communication between the PC and Arduino board.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.open">
+<code class="sig-name descname">open</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">port</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">address</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">protocol</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.open"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.open" title="Permalink to this definition">¶</a></dt>
+<dd><p>Opens the TCP/IP communication between the PC and Arduino board.</p>
+<dl>
+<dt>Args:</dt><dd><p>port: The port to communicate over.</p>
+<p>address: The IP address of the device.</p>
+<p>protocol: Protocol to use - TCP or UDP</p>
+<p>timeout: The time to wait for timeout.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.process_data">
+<code class="sig-name descname">process_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.process_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.process_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the data from socket to be processed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the Handler processing commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.send">
+<code class="sig-name descname">send</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">arg</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.send"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.send" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a command over the TCP/IP connection.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+<p><a href="#id5"><span class="problematic" id="id6">*</span></a>arg: Variable argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.stop">
+<code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases the lock when signalled via an interrupt.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.wait_until_running">
+<code class="sig-name descname">wait_until_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.wait_until_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.wait_until_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits until the current thread is running.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandhandler.TCPIPCommandHandler.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandhandler.html#TCPIPCommandHandler.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandhandler.TCPIPCommandHandler.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes raw data into the socket.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>msg: The message to send.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-commanduino.commandmanager">
+<span id="command-manager-module"></span><span id="command-manager"></span><h2>Command Manager Module<a class="headerlink" href="#module-commanduino.commandmanager" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-commandmanager"></span><dl class="py class">
+<dt id="commanduino.commandmanager.CommandBonjour">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandmanager.</code><code class="sig-name descname">CommandBonjour</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">commandhandlers</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">0.1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a Command Manager for Bonjour devices.</p>
+<dl>
+<dt>Args:</dt><dd><p>commandhandlers: Collection of CommandHandler objects.</p>
+<p>timeout: Time to wait before timeout, default set to DEFAULT_BONJOUR_TIMEOUT (0.1)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandBonjour.clear_bonjour_info">
+<code class="sig-name descname">clear_bonjour_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour.clear_bonjour_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour.clear_bonjour_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialises the Bonjour information.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandBonjour.detect_device">
+<code class="sig-name descname">detect_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span><span class="p">, </span>str<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour.detect_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour.detect_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempts to detect the Bonjour device.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_id: The ID of the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>handler: TheCommand Handler object.</p>
+<p>bonjour_id: The Bonjour ID.</p>
+<p>elapsed: Time elapsed since request.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandBonjour.get_bonjour_id">
+<code class="sig-name descname">get_bonjour_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>str<span class="p">, </span>bool<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour.get_bonjour_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour.get_bonjour_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtains the device’s bonjour ID.</p>
+<dl>
+<dt>Args:</dt><dd><p>handler: The Command Handler object.</p>
+<p>command_id: The ID of the command.</p>
+</dd>
+<dt>Returns:</dt><dd><p>self.device_bonjour_id: The Bonjour ID.</p>
+<p>is_valid: Validity of the ID.</p>
+<p>elapsed: Time elapsed since request.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandBonjour.handle_bonjour">
+<code class="sig-name descname">handle_bonjour</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arg</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour.handle_bonjour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour.handle_bonjour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the Bonjour initialisation.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><a href="#id7"><span class="problematic" id="id8">*</span></a>arg: Variable argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandBonjour.send_bonjour">
+<code class="sig-name descname">send_bonjour</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">command_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandBonjour.send_bonjour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandBonjour.send_bonjour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a message to the device.</p>
+<div class="admonition-todo admonition" id="id9">
+<p class="admonition-title">Todo</p>
+<p>Fix this up</p>
+</div>
+<dl>
+<dt>Args:</dt><dd><p>handler: The Command Handler object.</p>
+<p>command_id: The ID of the command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="commanduino.commandmanager.CommandManager">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandmanager.</code><code class="sig-name descname">CommandManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_configs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Dict<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">devices_dict</span><span class="p">:</span> <span class="n">Dict</span></em>, <em class="sig-param"><span class="n">init_timeout</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">init_n_repeats</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">5</span></em>, <em class="sig-param"><span class="n">simulation</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages varying amounts of Command Handler objects.</p>
+<dl>
+<dt>Args:</dt><dd><p>command_configs: Collection of command configurations.</p>
+<p>devices_dict: Dictionary containing the list of devices.</p>
+<p>init_timeout: Initialisation timeout, default set to DEFAULT_INIT_TIMEOUT (1).</p>
+<p>init_n_repeats: Number of times to attempt initialisation, default set to DEFAULT_INIT_N_REPEATS (5).</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.add_command_handler">
+<code class="sig-name descname">add_command_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler_config</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.add_command_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.add_command_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates command handler from the configuration dictionary, tests connection
+and appends instance to self.commandhandlers</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>handler_config: Handler configuration dictionary.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.from_config">
+<em class="property">classmethod </em><code class="sig-name descname">from_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">config</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#commanduino.commandmanager.CommandManager" title="commanduino.commandmanager.CommandManager">commanduino.commandmanager.CommandManager</a><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.from_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.from_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtains the necessary information from a configuration setup.</p>
+<dl>
+<dt>Args:</dt><dd><p>cls (CommandManager): The instantiating class.</p>
+<p>config (Dict): Dictionary containing the configuration data.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.from_configfile">
+<em class="property">classmethod </em><code class="sig-name descname">from_configfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configfile</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">simulation</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>bool<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#commanduino.commandmanager.CommandManager" title="commanduino.commandmanager.CommandManager">commanduino.commandmanager.CommandManager</a><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.from_configfile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.from_configfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtains the configuration data from a configuration file.</p>
+<dl>
+<dt>Args:</dt><dd><p>cls (CommandManager): The instantiating class.</p>
+<p>configfile (File): The configuration file.</p>
+<p>simulation (bool): True if simulation mode is needed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.handle_init">
+<code class="sig-name descname">handle_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">arg</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.handle_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.handle_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handles the initialisation of the Manager, ensuring that the threading locks are released.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p><a href="#id10"><span class="problematic" id="id11">*</span></a>arg: Variable argument.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.register_all_devices">
+<code class="sig-name descname">register_all_devices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">devices_dict</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.register_all_devices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.register_all_devices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers all available Arduino devices.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>devices_dict: Dictionary containing all devices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.register_device">
+<code class="sig-name descname">register_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device_name</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">device_info</span><span class="p">:</span> <span class="n">Dict</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.register_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.register_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an individual Arduino device.</p>
+<dl>
+<dt>Args:</dt><dd><p>device_name: Name of the device.</p>
+<p>device_info: Dictionary containing the device information.</p>
+</dd>
+<dt>Raises:</dt><dd><p>CMDeviceRegisterError: Device is not in the device register.</p>
+<p>CMBonjourError: Device has not been found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.remove_command_handler">
+<code class="sig-name descname">remove_command_handler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler_to_remove</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.remove_command_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.remove_command_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes the command handler object &amp; removes a reference to it from
+class dictionary. Then deletes the devices bound to the handler being deleted.</p>
+<p>The method to detect which devices depend on the handler being deleted
+may seem wanky because it is.
+However, it is the only possible method as every device internal
+CommandHandler doesn’t hold a reference to an actual command handler.
+The only thing having this reference is the device’s write() function
+which gets updated on create_and_setup_device()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.request_and_wait_for_init">
+<code class="sig-name descname">request_and_wait_for_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>bool<span class="p">, </span>float<span class="p">]</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.request_and_wait_for_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.request_and_wait_for_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests initialisation and waits until it obtains a threading lock.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>handler: Command Handler object for communication.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.request_init">
+<code class="sig-name descname">request_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.request_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.request_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Requests initialisation over communication link.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>handler: Command Handler object for communication.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.set_devices_as_attributes">
+<code class="sig-name descname">set_devices_as_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.set_devices_as_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.set_devices_as_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the list of devices as attributes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.unrecognized">
+<code class="sig-name descname">unrecognized</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.unrecognized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.unrecognized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Received command is unrecognised.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>cmd (str): The received command.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.unregister_device">
+<code class="sig-name descname">unregister_device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">device_name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.unregister_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.unregister_device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes device attribute &amp; reference from devices dictionary</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.commandmanager.CommandManager.wait_device_for_init">
+<code class="sig-name descname">wait_device_for_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">handler</span><span class="p">:</span> <span class="n">Union<span class="p">[</span><a class="reference internal" href="#commanduino.commandhandler.SerialCommandHandler" title="commanduino.commandhandler.SerialCommandHandler">commanduino.commandhandler.SerialCommandHandler</a><span class="p">, </span><a class="reference internal" href="#commanduino.commandhandler.TCPIPCommandHandler" title="commanduino.commandhandler.TCPIPCommandHandler">commanduino.commandhandler.TCPIPCommandHandler</a><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="_modules/commanduino/commandmanager.html#CommandManager.wait_device_for_init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.CommandManager.wait_device_for_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for initialisation using communication link.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>handler: Command Handler object to add/remove commands.</p>
+</dd>
+<dt>Returns:</dt><dd><p>elapsed: Time waited for initialisation.</p>
+</dd>
+<dt>Raises:</dt><dd><p>CMHandlerDiscoveryTimeout: CommandManager on the port was not initialised.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="commanduino.commandmanager.VirtualAttribute">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandmanager.</code><code class="sig-name descname">VirtualAttribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">logger</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#VirtualAttribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.VirtualAttribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Callable attribute for virtual device</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="commanduino.commandmanager.VirtualDevice">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.commandmanager.</code><code class="sig-name descname">VirtualDevice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">device_info</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/commandmanager.html#VirtualDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.commandmanager.VirtualDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Virtual device mock to replace normal devices in simulation mode</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-commanduino.lock">
+<span id="lock-module"></span><span id="lock"></span><h2>Lock module<a class="headerlink" href="#module-commanduino.lock" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-lock"></span><dl class="py class">
+<dt id="commanduino.lock.Lock">
+<em class="property">class </em><code class="sig-prename descclassname">commanduino.lock.</code><code class="sig-name descname">Lock</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">sleep_time</span><span class="o">=</span><span class="default_value">0.001</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents the Threading locks to be used throughout this library.</p>
+<dl>
+<dt>Args:</dt><dd><p>timeout (int): Time to wait until timeout, default set to 1.</p>
+<p>sleep_time (float): Time to wait, default set to 0.001.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="commanduino.lock.Lock.acquire">
+<code class="sig-name descname">acquire</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock.acquire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock.acquire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Acquires a lock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.lock.Lock.ensure_released">
+<code class="sig-name descname">ensure_released</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock.ensure_released"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock.ensure_released" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forces unlocking of a locked thread.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.lock.Lock.locked">
+<code class="sig-name descname">locked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock.locked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock.locked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if a thread is locked.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>self.lock.locked() (bool): Thread is locked/unlocked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.lock.Lock.release">
+<code class="sig-name descname">release</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock.release"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Releases a lock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="commanduino.lock.Lock.wait_until_released">
+<code class="sig-name descname">wait_until_released</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/commanduino/lock.html#Lock.wait_until_released"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#commanduino.lock.Lock.wait_until_released" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits until the thread lock is released.</p>
+<dl>
+<dt>Returns:</dt><dd><p>False (bool): Elapsed time &gt; the timeout.</p>
+<p>True (bool): Elapsed time &lt; timeout.</p>
+<p>elapsed (float): Time taken to complete.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="commanduino.commanddevices.html" class="btn btn-neutral float-right" title="Command Devices Package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Documentation for the Commanduino Library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016, Jonathan Grizou
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

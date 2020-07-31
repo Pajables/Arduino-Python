@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>commanduino.commandhandler &mdash; Commanduino 0.1.2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> Commanduino
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.2
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../commanduino.html">Commanduino Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Commanduino</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>commanduino.commandhandler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for commanduino.commandhandler</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">.. module:: commandhandler</span>
+<span class="sd">   :platform: Unix</span>
+<span class="sd">   :synopsis: Handles the communication to/from the Arduino Hardware.</span>
+
+<span class="sd">.. moduleauthor:: Jonathan Grizou &lt;Jonathan.Grizou@gla.ac.uk&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">serial</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">CMHandlerConfigurationError</span><span class="p">,</span> <span class="n">CMTimeout</span><span class="p">,</span> <span class="n">CMCommunicationError</span>
+
+<span class="c1"># Default delimiter to separate commands</span>
+<span class="n">DEFAULT_DELIM</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span>
+
+<span class="c1"># Default terminal character of a command</span>
+<span class="n">DEFAULT_TERM</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span>
+
+<span class="c1"># Default decimal</span>
+<span class="n">DEFAULT_CMD_DECIMAL</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># Default baudrate for communication</span>
+<span class="n">DEFAULT_BAUDRATE</span> <span class="o">=</span> <span class="mi">115200</span>
+
+<span class="c1"># Default timeout time</span>
+<span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+
+<div class="viewcode-block" id="CommandHandler"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler">[docs]</a><span class="k">class</span> <span class="nc">CommandHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the Command Handler which will handle commands to/from the Arduino hardware.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        delim: Delimiter of the command, default set to DEFAULT_DELIM(&#39;,&#39;)</span>
+
+<span class="sd">        term: Terminal character of the command, set to DEFAULT_TERM(&#39;;&#39;)</span>
+
+<span class="sd">        cmd_decimal: Decimal of the command, default set to DEFAULT_CMD_DECIMAL(2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommandHandler.from_config"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.from_config">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_config</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;CommandHandler&#39;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Obtains the details of the handler from a configuration.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls: The instantiating class.</span>
+
+<span class="sd">            config: Dictionary containing the configuration details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            CommandHandler: New CommandHandler object with details set from a configuration setup.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_DELIM</span><span class="p">,</span> <span class="n">term</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_TERM</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_CMD_DECIMAL</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="c1"># Something descriptive to reference the handler in logs.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">delim</span> <span class="o">=</span> <span class="n">delim</span>  <span class="c1"># character separating args in a message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">term</span> <span class="o">=</span> <span class="n">term</span>  <span class="c1"># character ending a message</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># string that will hold the received data</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_header</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_decimal</span> <span class="o">=</span> <span class="n">cmd_decimal</span>
+
+<div class="viewcode-block" id="CommandHandler.process_char"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.process_char">[docs]</a>    <span class="k">def</span> <span class="nf">process_char</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a_char</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes a single character of a command and adds it to the receiving buffer.</span>
+<span class="sd">        If the terminator character is found, process the buffer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a_char: The character to be processed</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">a_char</span><span class="p">:</span>
+            <span class="n">decoded_char</span> <span class="o">=</span> <span class="n">a_char</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">decoded_char</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">term</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buffer</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">buffer</span> <span class="o">+=</span> <span class="n">decoded_char</span></div>
+
+<div class="viewcode-block" id="CommandHandler.handle"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.handle">[docs]</a>    <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles a full command to/from the Arduino hardware.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd: The command to be handled.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">term</span><span class="p">)</span>
+        <span class="n">cmd_list</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">delim</span><span class="p">)</span>
+        <span class="n">cmd_id</span> <span class="o">=</span> <span class="n">cmd_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Handling &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd</span><span class="p">),</span>
+                          <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;cmd_list&#39;</span><span class="p">:</span> <span class="n">cmd_list</span><span class="p">,</span>
+                                 <span class="s1">&#39;cmd_id&#39;</span><span class="p">:</span> <span class="n">cmd_id</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">cmd_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">clb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">cmd_id</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found callback for &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_id</span><span class="p">),</span>
+                                  <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;callback_function&#39;</span><span class="p">:</span> <span class="n">clb</span><span class="p">})</span>
+                <span class="n">clb</span><span class="p">(</span><span class="o">*</span><span class="n">cmd_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># all args in the command are given to the callback function as arguments</span>
+        <span class="k">elif</span> <span class="n">cmd_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">clb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">cmd_id</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found relay for &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_id</span><span class="p">),</span>
+                                  <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;relay_function&#39;</span><span class="p">:</span> <span class="n">clb</span><span class="p">})</span>
+                <span class="n">clb</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">build_remaining</span><span class="p">(</span><span class="n">cmd_list</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No callback assigned to &quot;</span><span class="si">{}</span><span class="s1">&quot;, defaulting&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd_id</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">clb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="p">:</span>
+                <span class="n">clb</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>  <span class="c1"># give back what was received</span></div>
+
+<div class="viewcode-block" id="CommandHandler.build_remaining"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.build_remaining">[docs]</a>    <span class="k">def</span> <span class="nf">build_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds an Arduino command from a list of partial commands.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd_list: The list of command constituents.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">delim</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmd_list</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">term</span></div>
+
+<div class="viewcode-block" id="CommandHandler.add_command"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.add_command">[docs]</a>    <span class="k">def</span> <span class="nf">add_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds an Arduino command to the handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">command_id</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommandHandler.remove_command"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.remove_command">[docs]</a>    <span class="k">def</span> <span class="nf">remove_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes an Arduino command from the Handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">command_id</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommandHandler.add_relay"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.add_relay">[docs]</a>    <span class="k">def</span> <span class="nf">add_relay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a relay to the Handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">command_id</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommandHandler.remove_relay"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.remove_relay">[docs]</a>    <span class="k">def</span> <span class="nf">remove_relay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a relay form the Handler.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">command_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">command_id</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">relays</span><span class="p">[</span><span class="n">command_id</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommandHandler.add_default_handler"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.add_default_handler">[docs]</a>    <span class="k">def</span> <span class="nf">add_default_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a default handler to the device.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommandHandler.remove_default_handler"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.remove_default_handler">[docs]</a>    <span class="k">def</span> <span class="nf">remove_default_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a default handler from the device.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            callback_function: A copy of the command to &quot;callback&quot;.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">callback_function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_handlers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback_function</span><span class="p">)</span></div>
+
+    <span class="c1">#</span>
+<div class="viewcode-block" id="CommandHandler.set_command_header"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.set_command_header">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_header</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">add_delim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the header of the Arduino command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd_header: The header of the command.</span>
+
+<span class="sd">            add_delim: Adds a delimiter to the command, default set to True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_header</span> <span class="o">=</span> <span class="n">cmd_header</span>
+        <span class="k">if</span> <span class="n">add_delim</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cmd_header</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Set command header to &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_header</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CommandHandler.set_command_decimal"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.set_command_decimal">[docs]</a>    <span class="k">def</span> <span class="nf">set_command_decimal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the decimal of the Arduino command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cmd_decimal: The decimal of the command.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd_decimal</span> <span class="o">=</span> <span class="n">cmd_decimal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Set decimal to &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cmd_decimal</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="CommandHandler.forge_command"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.CommandHandler.forge_command">[docs]</a>    <span class="k">def</span> <span class="nf">forge_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a full Arduino command.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            *args: Variable length argument list.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_header</span>
+        <span class="n">cmd</span> <span class="o">+=</span> <span class="n">command_id</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">cmd</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delim</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cmd_decimal</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cmd</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="n">cmd</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">term</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Forged &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cmd</span><span class="p">),</span>
+                          <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;command_id&#39;</span><span class="p">:</span> <span class="n">command_id</span><span class="p">,</span>
+                                 <span class="s1">&#39;arguments&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">cmd</span></div></div>
+
+
+<div class="viewcode-block" id="SerialCommandHandler"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler">[docs]</a><span class="k">class</span> <span class="nc">SerialCommandHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">,</span> <span class="n">CommandHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the Command Handler which will handle commands to/from the Arduino hardware via Serial Communication.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        port: The port to communicate over.</span>
+
+<span class="sd">        baudrate: The baudrate of the serial communication, default set to DEFAULT_BAUDRATE (115200)</span>
+
+<span class="sd">        timeout: The time to wait for timeout, default set to DEFAULT_TIMEOUT (0.01)</span>
+
+<span class="sd">        delim: The delimiting character of a command, default set to DEFAULT_DELIM (&#39;,&#39;)</span>
+
+<span class="sd">        term: The terminal character of a command, default set to DEFAULT_TERM (&#39;;&#39;)</span>
+
+<span class="sd">        cmd_decimal: The decimal of the command, default set to DEFAULT_CMD_DECIMAL (2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_BAUDRATE</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_TIMEOUT</span><span class="p">,</span>
+                 <span class="n">delim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_DELIM</span><span class="p">,</span> <span class="n">term</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_TERM</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_CMD_DECIMAL</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="n">CommandHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SerialCommandHandler.open"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens the serial communication between the PC and Arduino board.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            port: The port to communicate over.</span>
+
+<span class="sd">            baudrate: The baudrate of serial communication.</span>
+
+<span class="sd">            timeout: The time to wait for timeout.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Opening port </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="p">),</span>
+                          <span class="n">extra</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="n">port</span><span class="p">,</span>
+                                 <span class="s1">&#39;baudrate&#39;</span><span class="p">:</span> <span class="n">baudrate</span><span class="p">,</span>
+                                 <span class="s1">&#39;timeout&#39;</span><span class="p">:</span> <span class="n">timeout</span><span class="p">})</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_serial</span> <span class="o">=</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">serial</span><span class="o">.</span><span class="n">SerialException</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMHandlerConfigurationError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.close"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the serial communication between the PC and Arduino board.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_serial&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_serial</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Closing port &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_serial</span><span class="o">.</span><span class="n">port</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the serial communication between the PC and Arduino board.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the serial communication between the PC and Arduino Board, due to an exception occurrence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exc_type (str): The exception type.</span>
+
+<span class="sd">            exc_value: The value of the exception.</span>
+
+<span class="sd">            traceback (str): The position in the code where the exception occurred.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SerialCommandHandler.stop"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Releases the lock when signalled via an interrupt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.run"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the Handler processing commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">process_serial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_serial</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="n">serial</span><span class="o">.</span><span class="n">SerialException</span><span class="p">,</span> <span class="n">serial</span><span class="o">.</span><span class="n">SerialTimeoutException</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">CMTimeout</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading from serial port </span><span class="si">{self._serial.port}</span><span class="s2">! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.send"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends a command over the serial communication.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id (str): The ID of the command.</span>
+
+<span class="sd">            *arg: Variable argument.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forge_command</span><span class="p">(</span><span class="n">command_id</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.write"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes a message over the serial communication.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msg (str): The message to send.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sending &quot;</span><span class="si">{}</span><span class="s1">&quot; on port &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serial</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_serial</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+        <span class="k">except</span> <span class="n">serial</span><span class="o">.</span><span class="n">SerialException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMCommunicationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error writing to serial port </span><span class="si">{self._serial.port}</span><span class="s2">! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.process_serial"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.process_serial">[docs]</a>    <span class="k">def</span> <span class="nf">process_serial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a_serial</span><span class="p">:</span> <span class="n">serial</span><span class="o">.</span><span class="n">Serial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Processes the serial communication to obtain data to be processed.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            a_serial: The serial to read from.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_char</span><span class="p">(</span><span class="n">a_serial</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SerialCommandHandler.wait_until_running"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.SerialCommandHandler.wait_until_running">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_running</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sleep_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits until the current thread is running.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sleep_time (float): The time to wait for, default set to 0.01</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">locked</span><span class="p">():</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">sleep_time</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TCPIPCommandHandler"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler">[docs]</a><span class="k">class</span> <span class="nc">TCPIPCommandHandler</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">,</span> <span class="n">CommandHandler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the Command Handler which will handle commands to/from the Arduino hardware via TCP/IP socket.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        port: The TCP/UDP port to communicate over.</span>
+
+<span class="sd">        address: The IP address of the device.</span>
+
+<span class="sd">        protocol: Either tcp or udp, default set to TCP.</span>
+
+<span class="sd">        timeout: The time to wait for timeout, default set to DEFAULT_TIMEOUT (0.01)</span>
+
+<span class="sd">        delim: The delimiting character of a command, default set to DEFAULT_DELIM (&#39;,&#39;)</span>
+
+<span class="sd">        term: The terminal character of a command, default set to DEFAULT_TERM (&#39;;&#39;)</span>
+
+<span class="sd">        cmd_decimal: The decimal of the command, default set to DEFAULT_CMD_DECIMAL (2)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TCP&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">DEFAULT_TIMEOUT</span><span class="p">,</span>
+                 <span class="n">delim</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_DELIM</span><span class="p">,</span> <span class="n">term</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_TERM</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_CMD_DECIMAL</span><span class="p">):</span>
+        <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="n">CommandHandler</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">term</span><span class="p">,</span> <span class="n">cmd_decimal</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">address</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">port</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="p">:</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">protocol</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">timeout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.open"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.open">[docs]</a>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">protocol</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Opens the TCP/IP communication between the PC and Arduino board.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            port: The port to communicate over.</span>
+
+<span class="sd">            address: The IP address of the device.</span>
+
+<span class="sd">            protocol: Protocol to use - TCP or UDP</span>
+
+<span class="sd">            timeout: The time to wait for timeout.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Opening connection to </span><span class="si">%s</span><span class="s1">:</span><span class="si">%s</span><span class="s1"> (</span><span class="si">%s</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">protocol</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s2">&quot;TCP&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">protocol</span> <span class="o">==</span> <span class="s2">&quot;UDP&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">CMHandlerConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown transport layer protocol &lt;</span><span class="si">{protocol}</span><span class="s2">&gt; provided!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="n">address</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">)))</span>
+            <span class="c1"># Receive timeout in seconds.</span>
+            <span class="c1"># This has to be done after opening the connection to avoid connect() error on non-blocking socket</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TimeoutError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMHandlerConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Socket timeout! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMHandlerConfigurationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Can&#39;t open socket! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.close"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the communication between the PC and Arduino board.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Connection closed.&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the serial communication between the PC and Arduino board.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes the serial communication between the PC and Arduino Board, due to an exception occurrence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exc_type (str): The exception type.</span>
+
+<span class="sd">            exc_value: The value of the exception.</span>
+
+<span class="sd">            traceback (str): The position in the code where the exception occurred.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.stop"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Releases the lock when signalled via an interrupt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.run"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starts the Handler processing commands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.send"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.send">[docs]</a>    <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sends a command over the TCP/IP connection.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            command_id: The ID of the command.</span>
+
+<span class="sd">            *arg: Variable argument.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forge_command</span><span class="p">(</span><span class="n">command_id</span><span class="p">,</span> <span class="o">*</span><span class="n">arg</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMCommunicationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error writing to socket! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.write"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Writes raw data into the socket.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            msg: The message to send.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Sending &quot;</span><span class="si">%s</span><span class="s1">&quot; to &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">getpeername</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.process_data"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.process_data">[docs]</a>    <span class="k">def</span> <span class="nf">process_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the data from socket to be processed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process_char</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_connection</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CMCommunicationError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading from socket! </span><span class="si">{e}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TCPIPCommandHandler.wait_until_running"><a class="viewcode-back" href="../../commanduino.html#commanduino.commandhandler.TCPIPCommandHandler.wait_until_running">[docs]</a>    <span class="k">def</span> <span class="nf">wait_until_running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits until the current thread is running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interrupted</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span></div></div>
+
+
+<span class="c1"># Typing variable for either Serial or TCPIP CommandHandler</span>
+<span class="n">GenericCommandHandler</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">SerialCommandHandler</span><span class="p">,</span> <span class="n">TCPIPCommandHandler</span><span class="p">]</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016, Jonathan Grizou
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
