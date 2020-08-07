@@ -11,6 +11,9 @@
     },
     {
       "port": "/dev/ttyACM2"
+    },
+    {
+      "port": "COM6"
     }
   ],
   "devices": {

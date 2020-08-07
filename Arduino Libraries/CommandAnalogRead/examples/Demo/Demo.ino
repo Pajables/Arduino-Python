@@ -4,7 +4,7 @@
 CommandManager cmdMng;
 
 #include <CommandAnalogRead.h>
-CommandAnalogRead ar(0);
+CommandAnalogRead ar(3);
 
 void setup()
 {

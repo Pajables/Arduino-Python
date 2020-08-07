@@ -4,7 +4,7 @@ CommandManager cmdMng;
 
 #include <AccelStepper.h>
 #include <CommandAccelStepper.h>
-AccelStepper stp(AccelStepper::DRIVER, 9, 10);
+AccelStepper stp(AccelStepper::DRIVER, 54, 55);
 CommandAccelStepper cmdStp(stp);
 
 void setup()
@@ -14,6 +14,9 @@ void setup()
   cmdStp.registerToCommandManager(cmdMng, "CSTP1");
 
   cmdMng.init();
+  pinMode(38, OUTPUT);
+  digitalWrite(38, LOW);
+  
 }
 
 void loop()

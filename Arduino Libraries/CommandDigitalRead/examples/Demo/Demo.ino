@@ -4,7 +4,7 @@
 CommandManager cmdMng;
 
 #include <CommandDigitalRead.h>
-CommandDigitalRead dr(10);
+CommandDigitalRead dr(57);
 
 void setup()
 {
